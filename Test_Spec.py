@@ -3,7 +3,7 @@ import pandas as pd
 from docx import Document
 from openpyxl import Workbook
 from openpyxl import load_workbook
-#======================================================
+#======================================================Start of script
 path = "D:\\Downloads\\TA8X.0100550.S06.00EN,01.00 QNGR AoE Lab Test Specification.docx"
 output = 'test_results.xlsx'
 # read the test spec document
