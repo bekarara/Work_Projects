@@ -1,17 +1,17 @@
+from tkinter.filedialog import askopenfilename
+import tkinter as tk
 import xlsxwriter
+import os
 import pandas as pd
 from docx import Document
 from openpyxl import Workbook
 from openpyxl import load_workbook
-#===========Inputs=======================================#
-word_doc = "D:\\Downloads\\TA8X.0100550.S06.00EN,01.00 QNGR AoE Lab Test Specification.docx"
-output = "C:\\Users\\xrbek\\Documents\\repo\\Output_Files\\test_results.xlsx"
-# uses "NGR_TC_SI_LAB" to filter for the targted tables.
-
+from pathlib import Path
+from datetime import datetime
 #========================================================#
-def convert_doc_table_to_excel(word_doc,output):
+def convert_doc_table_to_excel(word_doc_filepath, output_filepath):
     # read the test spec document
-    doc = Document(word_doc)
+    doc = Document(word_doc_filepath)
 
     #convert to df
     tables = []
@@ -36,7 +36,7 @@ def convert_doc_table_to_excel(word_doc,output):
             tables.append(pd.DataFrame(df))
 
     #write to excel
-    writer = pd.ExcelWriter(output, engine = 'xlsxwriter')
+    writer = pd.ExcelWriter(output_filepath, engine = 'xlsxwriter')
     for df in tables:
         # write dataframes to excel
         df.to_excel(writer, sheet_name = df.iloc[0][0][18:22])
@@ -61,5 +61,20 @@ def convert_doc_table_to_excel(word_doc,output):
         
     writer.close()
     return
+#========================================================#
 
-convert_doc_table_to_excel(word_doc,output)
+# select input word doc file:
+word_doc_filepath = askopenfilename()
+
+#select directory for output:
+root = tk.Tk()
+root.withdraw()
+output_dir = tk.filedialog.askdirectory()
+filename_base = Path(word_doc_filepath).stem
+#add timestamp and input file name to create output xlsx file name:
+now = datetime.now()
+timestamp = now.strftime('%Y-%m-%d-%H-%M-%S')
+output_filepath = os.path.join(output_dir, filename_base + "_" + timestamp + ".xlsx")
+
+# convert to excel:
+convert_doc_table_to_excel(word_doc_filepath, output_filepath)
