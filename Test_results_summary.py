@@ -20,14 +20,17 @@ for sheets in sheet_names:
     excel_data_df_list.append(df)
 
 #initialize result dataframe
-summary_df = pd.DataFrame(columns = ['Test Case ID','Pass','Fail'])
+summary_df = pd.DataFrame(columns = ['Test Case ID','Pass','Fail','Open','Pass /w comments','Partial'])
 
 
 #count the number of pass and fail results
 for index, test_results in enumerate(excel_data_df_list):
     num_pass = (test_results[4] == "Pass").sum() #test results is in column "4"
     num_fail = (test_results[4] == "Fail").sum()
-    new_df_row = [sheet_names[index],num_pass,num_fail]
+    num_open = (test_results[4] == "Open").sum()
+    num_comments = (test_results[4] == "Pass /w comments").sum()
+    num_partial = (test_results[4] == "Partial").sum()
+    new_df_row = [sheet_names[index],num_pass,num_fail,num_open,num_comments,num_partial]
     summary_df.loc[len(summary_df)] = new_df_row  
 
 #add summary sheet
